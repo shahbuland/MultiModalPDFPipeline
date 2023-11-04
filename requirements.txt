@@ -1,0 +1,7 @@
+nltk
+python-Levenshtein
+transformers>=4.25.1
+ironpdf
+sentencepiece
+accelerate
+datasets
