@@ -64,10 +64,6 @@ def load_pdf_url(pdf_url : str, tmp_path = "./tmp_pdf_images"):
 
 # ==== FIGURE EXTRACTION ====
 
-PDFFIGURES2_PATH = "../pdffigures2"
-SBT_PATH = "C:\\Users\\smati\\AppData\\Local\\Coursier\\data\\bin"
-os.environ["PATH"] += os.pathsep + SBT_PATH
-
 # Uses Allenai PDFfigure2, refer to repository to get that setup
 def load_figures(pdf_path_or_url, tmp_path = "./tmp_pdf_figures"):
     #Empty pre-emptively
@@ -95,18 +91,14 @@ def load_figures(pdf_path_or_url, tmp_path = "./tmp_pdf_figures"):
     os.makedirs(tmp_pdf_path, exist_ok=True)
     shutil.copy(pdf_path, tmp_pdf_path)
 
-    pdf_path = os.path.abspath(tmp_pdf_path)
-    out_path = os.path.abspath(tmp_path)
-    pdf_path = pdf_path.replace("\\", "/")
-    out_path = out_path.replace("\\", "/")
-    
-    wd = os.path.abspath(PDFFIGURES2_PATH)
+    pdf_path = f"../{tmp_pdf_path}/"
+    out_path = f"../{tmp_path}/"
+    wd = "./pdffigures2"
 
     print(pdf_path)
     print(out_path)
     print(os.listdir(wd))
-    #command = ' '.join(['run-main', 'org.allenai.pdffigures2.FigureExtractorBatchCli', pdf_path, '-m', out_path, '-d', out_path])
-    sbt_command = f"sbt \"runMain org.allenai.pdffigures2.FigureExtractorBatchCli {pdf_path}/ -m {out_path}/\""
+    sbt_command = f"sbt \"runMain org.allenai.pdffigures2.FigureExtractorBatchCli {pdf_path} -m {out_path}\""
     print(sbt_command)
     process = subprocess.Popen(sbt_command,
                                       shell=True,
@@ -132,3 +124,11 @@ def load_figures(pdf_path_or_url, tmp_path = "./tmp_pdf_figures"):
             images_dict[fig_table_name] = img
 
     return images_dict
+
+def get_notable(index : int, path = "notable_papers.txt"):
+    """
+    Given a file that contains (line by line) URLs to paper PDFs, returns the URL of the [index]-th paper (i.e the [index]-th line)
+    """
+    with open(path, 'r') as file:
+        papers = file.readlines()
+    return papers[index].strip()
