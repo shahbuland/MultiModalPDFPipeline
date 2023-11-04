@@ -4,10 +4,11 @@ device = 'cuda'
 processor = NougatProcessor.from_pretrained("facebook/nougat-base")
 model = VisionEncoderDecoderModel.from_pretrained("facebook/nougat-base").to(device)
 
-from pdf_utils import load_pdf, load_figures
+from pdf_utils import load_pdf, load_figures, get_notable
 
-imgs = load_pdf("https://arxiv.org/pdf/1706.03762.pdf")
-figs = load_figures("attention.pdf")
+url = get_notable(0)
+imgs = load_pdf(url)
+figs = load_figures(url)
 
 print(figs.keys())
 
