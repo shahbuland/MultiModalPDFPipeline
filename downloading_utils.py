@@ -10,6 +10,11 @@ def url_to_filename(url : str):
     hex_dig = hash_object.hexdigest()
     return f"{hex_dig[:16]}.pdf"
 
+def get_id_without_ext(path : str):
+    """
+    Return filename without .pdf extension
+    """
+    return path[:path.find(".")]
 
 def download_if_not_present(paper_url : str, cache_dir = "./paper_cache"):
     """
