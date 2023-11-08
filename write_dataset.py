@@ -1,6 +1,7 @@
 from downloading_utils import download_if_not_present, get_id_without_ext
 import os
-from pdf_processing import PDFProcessor, PDFObject
+from pdf_processing import PDFProcessor
+from data_utils import PDFObject
 import joblib
 from tqdm import tqdm
 
