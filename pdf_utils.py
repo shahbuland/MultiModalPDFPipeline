@@ -1,4 +1,4 @@
-from ironpdf import *
+from ironpdf import PdfDocument
 import os
 from PIL import Image
 import requests
@@ -121,11 +121,11 @@ def load_figures(pdf_path_or_url, tmp_path = "./tmp_pdf_figures"):
             # Open the image file
             img = Image.open(os.path.join(tmp_path, file))
             # Add the image to the dictionary
-            images_dict[fig_table_name] = img
+            images_dict[fig_table_name.lower()] = img
 
     return images_dict
 
-def get_notable(index : int, path = "notable_papers.txt"):
+def get_notable(index : int, path = "paper_urls.txt"):
     """
     Given a file that contains (line by line) URLs to paper PDFs, returns the URL of the [index]-th paper (i.e the [index]-th line)
     """
