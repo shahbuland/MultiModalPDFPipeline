@@ -29,4 +29,6 @@ def download_if_not_present(paper_url : str, cache_dir = "./paper_cache"):
             urllib.request.urlretrieve(paper_url, file_path)
         except:
             raise Exception(f"Failed to retrieve PDF from URL {paper_url}, check if URL is valid.")
+    
+    return file_path
 
