@@ -14,13 +14,13 @@ class PDFPage:
         self.text = text
         self.image_identifiers = image_identifiers
         self.images = images
-
+        
 class PDFObject:
     """
     Object to represent a PDF file with figure locations and images embedded appropriately
     """
-    def __init__(self):
-        self.pages = []
+    def __init__(self, pages = []):
+        self.pages = pages
 
     def add_page(self, page : PDFPage):
         self.pages.append(page)
@@ -35,7 +35,16 @@ class PDFObject:
         os.makedirs(path, exist_ok=True)
         for i, page in enumerate(self.pages):
             page_id = str(i).zfill(8)
-            with open(f"{path}/{page_id}.txt", "w") as text_file:
+            with open(f"{path}/{page_id}.txt", "w", errors = "ignore") as text_file:
                 text_file.write(page.text)
             for (id, img) in zip(page.image_identifiers, page.images):
                 img.save(f"{path}/{page_id}-{id}.png")
+
+def join_pdf_objects(ls : Iterable[PDFObject]) -> PDFObject:
+    """
+    Join multiple PDF objects by appending pages. May not account for multiple figures
+    having the same identifiers.
+    """
+    return PDFObject([page for obj in ls for page in obj.pages])
+
+
