@@ -107,14 +107,14 @@ class PDFProcessor:
 
         return sequence
 
-    def __call__(self, pdf_path : str) -> PDFObject:
+    def __call__(self, pdf_path : str, ignore_images : bool = False) -> PDFObject:
         """
         Given path to PDF file returns PDFObject representation
         """
         # pdf pages as images
         page_imgs : Iterable[Image.Image] = load_pdf(pdf_path)
         # Dictionary of all figures from the PDF 
-        figs : dict = load_figures(pdf_path)
+        figs : dict = {} if ignore_images else load_figures(pdf_path)
 
         pdf_obj = PDFObject()
 
