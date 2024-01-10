@@ -1,8 +1,8 @@
-from downloading_utils import download_if_not_present, get_id_without_ext
+from mm_pdf.utils.downloading_utils import download_if_not_present, get_id_without_ext
 import os
-from pdf_processing import PDFProcessor
-import pdf_utils
-from data_utils import PDFObject, join_pdf_objects
+from mm_pdf.utils.pdf_processing import PDFProcessor
+from mm_pdf.utils import pdf_utils
+from mm_pdf.utils.data_utils import PDFObject, join_pdf_objects
 import joblib
 from tqdm import tqdm
 import shutil
