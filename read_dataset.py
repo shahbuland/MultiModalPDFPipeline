@@ -99,33 +99,37 @@ def read_dataset(ds_path, train_test = None, img_paths_only = False):
                 captions[num] = caption
 
         return text, captions
+    
+    def process_document(doc_path):
+        """
+        Process a single document into its corresponding components.
+        Returns dictionary with keys:
+            - text : list of text from each page of the document
+            - figure : list of triples of all figures from the doc with (page_num, caption, path or image)
+            - table : list of triples of all tables (same format as figures)
+        """
 
-    def process_subset(doc_paths):
-        res = []
+        pages = []
+        figures = []
+        tables = []
 
-        for path in doc_paths: # Iterating through documents
-            files = os.listdir(os.path.join(ds_path, path))
-            files = [os.path.join(os.path.join(ds_path, path), fp) for fp in files]
+        files = os.listdir(doc_path)
+        files = [os.path.join(doc_path, fp) for fp in files]
 
-            pages = []
-            figures = []
-            tables = []
+        figure_queue = {}
+        table_queue = {}
 
-            # Figures and tables waiting to get paired with their caption
-            figure_queue = {}
-            table_queue = {}
+        # Sort so that digits stay in order
+        # images will always come before text
+        def custom_sort_key(file_path):
+            basename = os.path.basename(file_path)
+            digits = int(basename[:8])
+            is_txt = basename.endswith(".txt")
+            return (digits, is_txt)
 
-            # Sort so that digits stay in order
-            # images will always come before text
-            def custom_sort_key(file_path):
-                basename = os.path.basename(file_path)
-                digits = int(basename[:8])
-                is_txt = basename.endswith(".txt")
-                return (digits, is_txt)
+        files.sort(key=custom_sort_key)
 
-            files.sort(key=custom_sort_key)
-
-            for file in files: # Iterating throughe very file for a document
+        for file in files: # Iterating throughe very file for a document
                 (file_type, page_num, num) = extract_file_info(file)
                 if file_type == "text":
                     with open(file, 'r') as f:
@@ -149,13 +153,19 @@ def read_dataset(ds_path, train_test = None, img_paths_only = False):
                     figure_queue[num] = file
                 elif file_type == "table":
                     table_queue[num] = file
-            
+
+        return {
+            "text" : pages,
+            "figure" : figures,
+            "table" : tables
+        }
+
+    def process_subset(doc_paths):
+        res = []
+
+        for path in doc_paths: # Iterating through documents
             res.append(
-                {
-                    "text" : pages,
-                    "figure" : figures,
-                    "table" : tables
-                }
+                process_document(os.path.join(ds_path, path))
             )
 
         return res
