@@ -1,8 +1,10 @@
 from mm_pdf.utils.downloading_utils import download_if_not_present, get_id_without_ext
-import os
-from mm_pdf.utils.pdf_processing import PDFProcessor
+from mm_pdf.pdf_processing import PDFProcessor
 from mm_pdf.utils import pdf_utils
 from mm_pdf.utils.data_utils import PDFObject, join_pdf_objects
+
+import tarfile
+import os
 import joblib
 from tqdm import tqdm
 import shutil
@@ -21,6 +23,7 @@ convention to match them with the pages they are from.
 cache_dir = "./paper_cache"
 write_path = "output_dataset"
 chunk_size = 50 # For PDFs with many pages like books, split into this size
+tar_result : bool = False
 
 if __name__ == "__main__":
     # Step 1: Iterate through paper_urls and download anything not already present
@@ -62,6 +65,12 @@ if __name__ == "__main__":
 
             # Remove the temp dir
             shutil.rmtree(tmp_path)
+
+    if tar_result:
+        tar_path = write_path + ".tar"
+        if not os.path.exists(tar_path):
+            with tarfile.open(tar_path, "w:gz") as tar:
+                tar.add(write_path, arcname=os.path.basename(write_path))
             
 
 

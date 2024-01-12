@@ -1,12 +1,11 @@
 from transformers import NougatProcessor, VisionEncoderDecoderModel
 from PIL import Image
 from typing import Iterable
-import ironpdf
-from pdf_utils import load_pdf, load_figures
 import re
 import os
 
-from data_utils import PDFPage, PDFObject
+from mm_pdf.utils.data_utils import PDFPage, PDFObject
+from mm_pdf.utils.pdf_utils import load_pdf, load_figures
 
 def find_image_identifiers(text : str) -> Iterable[str]:
     """
