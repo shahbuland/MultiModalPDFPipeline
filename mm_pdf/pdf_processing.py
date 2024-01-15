@@ -3,6 +3,7 @@ from PIL import Image
 from typing import Iterable
 import re
 import os
+import torch
 
 from mm_pdf.utils.data_utils import PDFPage, PDFObject
 from mm_pdf.utils.pdf_utils import load_pdf, load_figures
@@ -89,11 +90,12 @@ class PDFProcessor:
     def __init__(self, device = 'cuda', max_tokens_per_page = 20000):
         self.device = device
         self.processor = NougatProcessor.from_pretrained("facebook/nougat-base")
-        self.model = VisionEncoderDecoderModel.from_pretrained("facebook/nougat-base").to(device)
+        self.model = VisionEncoderDecoderModel.from_pretrained("facebook/nougat-base", torch_dtype = torch.float16).to(device)
         self.max_tokens_per_page = max_tokens_per_page
 
+    @torch.no_grad()
     def call_nougat(self, img : Image.Image):
-        pixel_values = self.processor(img, data_format = "channels_first", return_tensors = "pt").pixel_values.to(self.device)
+        pixel_values = self.processor(img, data_format = "channels_first", return_tensors = "pt").pixel_values.to(self.device).half()
         
         outputs = self.model.generate(
             pixel_values,
